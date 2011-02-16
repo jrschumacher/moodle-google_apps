@@ -20,7 +20,7 @@
 * @author Chris Stones
 */
  
-$string['blockname'] = 'Gmail';
+$string['pluginname'] = 'Gmail';
 $string['gmail'] = 'gmail';
 
 
