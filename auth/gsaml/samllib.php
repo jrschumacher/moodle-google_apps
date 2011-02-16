@@ -77,7 +77,7 @@ if ( !class_exists('SimpleSAML_Utilities') ) {
  */
 function gsaml_send_auth_response($samldata) {
 	global $CFG,$SESSION,$USER;
-	
+
 	SimpleSAML_Configuration::init($CFG->dirroot.'/auth/gsaml/config');
 	$config   = SimpleSAML_Configuration::getInstance();
 	$metadata = SimpleSAML_Metadata_MetaDataStorageHandler::getMetadataHandler();

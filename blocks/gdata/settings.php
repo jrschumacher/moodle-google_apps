@@ -48,12 +48,13 @@ if (!class_exists('admin_setting_special_croninterval')) {
          * @return boolean
          **/
         function config_write($name, $value) {
+            global $DB;
             if (empty($value)) {
                 $cron = 0;
             } else {
                 $cron = $value * MINSECS;
             }
-            if (set_field('block', 'cron', $cron, 'name', 'gdata')) {
+            if ($DB->set_field('block', 'cron', $cron, array ('name' => 'gdata'))) {
                 return parent::config_write($name, $value);
             }
             return false;

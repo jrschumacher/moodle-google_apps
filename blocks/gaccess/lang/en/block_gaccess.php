@@ -1,4 +1,4 @@
-<?php
+<?php // $Id$
 /**
 * Copyright (C) 2009  Moodlerooms Inc.
 *
@@ -20,25 +20,9 @@
 * @author Chris Stones
 */
  
-/**
- * GAccess Settings
- *
- * @author Chris Stones
- *         based off Mark's code
- * @version $Id$
- * @package block_gmail
- **/
+$string['blockname'] = 'Google Apps';
+$string['pluginname'] = 'Google Apps';
 
-require_once($CFG->dirroot.'/lib/adminlib.php');
-
-$configs   = array();
-$configs[] = new admin_setting_configcheckbox('newwinlink', "New Window Links", "If selected links will open in new window.", '1');
-
-// Define the config plugin so it is saved to
-// the config_plugin table then add to the settings page
-foreach ($configs as $config) {
-    $config->plugin = 'blocks/gaccess';
-    $settings->add($config);
-}
+$string['nodomainyet'] = 'No domain configured yet.';
 
 ?>

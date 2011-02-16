@@ -45,6 +45,25 @@ class admin_setting_upload extends admin_setting {
     var $_upload_manager;
     var $file_name_ref;
     
+    function parse_setting_name($name) {
+        $bits = explode('/', $name);
+        if (count($bits) > 2) {
+            print_error('invalidadminsettingname', '', '', $name);
+        }
+        $this->name = array_pop($bits);
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $this->name)) {
+            print_error('invalidadminsettingname', '', '', $name);
+        }
+        if (!empty($bits)) {
+            $this->plugin = array_pop($bits);
+            if ($this->plugin === 'moodle') {
+                $this->plugin = null;
+            } else if (!preg_match('/^[a-zA-Z0-9_]+$/', $this->plugin)) {
+                print_error('invalidadminsettingname', '', '', $name);
+            }
+        }
+    }
+
     /**
      * config text contructor
      * @param string $name of setting
@@ -62,7 +81,11 @@ class admin_setting_upload extends admin_setting {
             $this->size  = ($paramtype == PARAM_INT) ? 5 : 30;
         }
 		$this->file_name_ref = $fileref;
-        parent::admin_setting($name, $visiblename, $description, $defaultsetting);
+
+        $this->parse_setting_name($name);
+        $this->visiblename    = $visiblename;
+        $this->description    = $description;
+        $this->defaultsetting = $defaultsetting;
     }
 
     function get_setting() {

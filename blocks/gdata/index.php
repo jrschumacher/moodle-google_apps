@@ -31,6 +31,7 @@
 
 require_once('../../config.php');
 require_once($CFG->libdir.'/blocklib.php');
+require_once($CFG->libdir.'/../course/lib.php');
 
 block_method_result('gdata', 'view');
 

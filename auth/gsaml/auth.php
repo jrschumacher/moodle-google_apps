@@ -57,9 +57,8 @@ class auth_plugin_gsaml extends auth_plugin_base {
      * @param string $password plain text password (with system magic quotes)
      */
     function user_authenticated_hook(&$user, $username, $password) {
-    	
-       global $SESSION,$CFG,$_REQUEST;
-       
+       global $SESSION,$CFG,$_REQUEST, $DB;
+
        
        // Shouldn't need due to Gmail using OAuth 
        //
@@ -140,7 +139,7 @@ class auth_plugin_gsaml extends auth_plugin_base {
         	 		
         // Debugging info added to moodle logs
 //        if (debugging('', DEBUG_DEVELOPER)) {
-//        	 	$module = "auth_saml"; // where were you
+//       	 	$module = "auth_saml"; // where were you
 //        	 	$error = "sample error message";
 //        	 	add_to_log(SITEID, $module, $error, '',$user->id, 0, $user->id);
 //        }
@@ -152,10 +151,9 @@ class auth_plugin_gsaml extends auth_plugin_base {
            // All this code essentialy makes up for the fact that
 		   // we have to exit the login page prematurely.
 	       if (isset($SESSION->samlrequest)) { 
-	       	
 	       		$SESSION->samlrequest = false;
-				
-		        if (!$user = get_record('user', 'username', $username, 'mnethostid', $CFG->mnet_localhost_id)) {
+
+		        if (!$user = $DB->get_record('user', array ('username' => $username, 'mnethostid' => $CFG->mnet_localhost_id))) {
                    // User could not be logged in
                    error(get_string('errusernotloggedin','auth_gsaml'));
 		        }
@@ -308,6 +306,7 @@ class auth_plugin_gsaml extends auth_plugin_base {
 	        
 	        // Store SAMLRequest for processing upon user auth
 	        if( !empty($_REQUEST['SAMLRequest']) ) {
+
 	        	// Case 2: if we aren't logged in we need this SAMl request for later
 	        	// store it in session and invoke upon auth hook
 	        	$SESSION->samlrequestdata = $_REQUEST['SAMLRequest'];
@@ -318,6 +317,7 @@ class auth_plugin_gsaml extends auth_plugin_base {
 	        // Case 1: if your logged in already and the SAML request just needs to 
 	        // be processed go ahead and redirect with authentication.
 	        if( isloggedin() and !is_null($_REQUEST['SAMLRequest']) ) { 
+
 	            $SESSION->samlrequestdata = $_REQUEST['SAMLRequest'];
 	        	$SESSION->samlrelaystate = $_REQUEST['RelayState'];
                 
@@ -338,9 +338,9 @@ class auth_plugin_gsaml extends auth_plugin_base {
      * @return bool Authentication success or failure.
      */
     function user_login($username, $password) { // therefore leave this code as is
-        global $CFG;
+        global $CFG, $DB;
         // TODO: might set user->auth to gsaml here :/
-        if ($user = get_record('user', 'username', $username, 'mnethostid', $CFG->mnet_localhost_id)) {
+        if ($user = $DB->get_record('user', array ('username' => $username, 'mnethostid' => $CFG->mnet_localhost_id))) {
             return validate_internal_user_password($user, $password);
         }
         return false;

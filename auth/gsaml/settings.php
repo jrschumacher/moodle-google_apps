@@ -66,20 +66,18 @@ $configs[] = new admin_setting_configtext('domainname', $domainnamestr, "", '', 
 $rsa_str   = get_string('rsakeystr','auth_gsaml');
 $desc_key  = get_string('desckeystr','auth_gsaml'); 
 $googauthconfstr = get_string('googauthconfstr','auth_gsaml');
+
 $hbutton   = helpbutton('keys', $googauthconfstr, 'auth_gsaml', true, false, '', true,'');
 
 $privatekey_data = !empty($samlvars->privatekey) ? basename($samlvars->privatekey) : '';
 $configs[] = new admin_setting_upload('privatekey',$rsa_str.' '.$hbutton, $desc_key,null, PARAM_RAW, null, 'privatekey');
 
-
 // Certificate Upload Option
 $ssl_str   = get_string('ssl_str','auth_gsaml'); 
 $desc_cert = get_string('desc_certstr','auth_gsaml'); 
 $hbutton   = helpbutton('keys', $googauthconfstr, 'auth_gsaml', true, false, '', true, '');
-
 $sslcert_data = !empty($samlvars->certificate) ? basename($samlvars->certificate) : '';
 $configs[] = new admin_setting_upload('certificate',$ssl_str.' '.$hbutton, $desc_cert, null, PARAM_RAW, null, 'sslcertfile');
-
 
 // Provide a Link to Google Settings
 $googsettings = get_string('lnktogoogsettings','auth_gsaml');

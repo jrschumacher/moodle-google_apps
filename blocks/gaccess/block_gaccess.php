@@ -78,42 +78,54 @@ class block_gaccess extends block_list {
         // USE the icons from this page
         // https://www.google.com/a/cpanel/mroomsdev.com/Dashboard
         // Google won't mind ;) (I hope)
-        $google_services = array(
+        $google_services = array();
         
-        	array(
+            $google_services[] = array(
         	        'service'   => 'Gmail',
-        			'relayurl'  => 'http://mail.google.com/a/'.$domain, 
+        			'relayurl'  => 'https://mail.google.com/a/'.$domain, 
         			'icon_name' => 'gmail.png'
-        	),
+        	);
         	
-        	//array(
-        	//        'service'   => 'Start Page',
-        	//		'relayurl'  => 'http://partnerpage.google.com/'.$domain,
-        	//		'icon_name' => 'startpage.png'
-        	//),
+        	$google_services[] = array(
+        	        'service'   => 'Start Page',
+        			'relayurl'  => 'http://partnerpage.google.com/'.$domain,
+        			'icon_name' => 'startpage.png'
+        	);
         	
-        	array(
+        $google_services[] = array(
         	        'service'   => 'Calendar',
-        			'relayurl'  => 'http://www.google.com/calendar/a/'.$domain, 
+        			'relayurl'  => 'https://www.google.com/calendar/a/'.$domain, 
         			'icon_name' => 'calendar.png'
-        	),
+        	);
         	
-        	array(
+        $google_services[] = array(
         	        'service'   => 'Docs',
-        			'relayurl'  => 'http://docs.google.com/a/'.$domain, 
+        			'relayurl'  => 'https://docs.google.com/a/'.$domain, 
         			'icon_name' => 'gdocs.png'
-        	)
-        );
+        	);
+
+        $google_services[] = array(
+        	        'service'   => 'Sites',
+        			'relayurl'  => 'https://sites.google.com/a/'.$domain, 
+        			'icon_name' => 'sites.gif'
+        	);
+        	
+        $google_services[] = array(
+        	        'service'   => 'Wave',
+        			'relayurl'  => 'https://wave.google.com/a/'.$domain, 
+        			'icon_name' => 'gwave.gif'
+        	);
+
         
         $newwinlnk = get_config('blocks/gaccess','newwinlink');
         if ($newwinlnk) { 
-            $target = 'target=\"_new\"';
+            $target = 'target="_blank"';
         } else {
             $target = '';
         }
         
         foreach( $google_services as $gs ) { // $gs['']
-            $this->content->items[] = "<a ".$target.". title=\"".$gs['service']."\"  href=\"".$gs['relayurl']."\">".$gs['service']."</a>";
+            $this->content->items[] = "<a ".$target." title=\"".$gs['service']."\"  href=\"".$gs['relayurl']."\">".$gs['service']."</a>";
             
             if ( !empty($gs['icon_name']) ) {
         		$this->content->icons[] = "<img src=\"$CFG->wwwroot/blocks/gaccess/imgs/".$gs['icon_name']."\" alt=\"".$gs['service']."\" />";        	

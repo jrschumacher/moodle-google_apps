@@ -70,7 +70,7 @@ class block_gdata extends block_list {
      * @return object
      **/
     function get_content() {
-        global $CFG, $USER, $COURSE;
+        global $CFG, $USER, $COURSE, $OUTPUT;
 
         if ($this->content !== NULL) {
             return $this->content;
@@ -87,19 +87,23 @@ class block_gdata extends block_list {
 
         $title = get_string('settings', 'block_gdata');
         $this->content->items[] = "<a title=\"$title\" href=\"$CFG->wwwroot/$CFG->admin/settings.php?section=blocksettinggdata\">$title</a>";
-        $this->content->icons[] = "<img src=\"$CFG->pixpath/i/settings.gif\" alt=\"$title\" />";
+        //$this->content->icons[] = "<img src=\"$CFG->pixpath/i/settings.gif\" alt=\"$title\" />";
+        $this->content->icons[] = $OUTPUT->pix_icon ("i/settings", $title);
 
         $title = get_string('status', 'block_gdata');
         $this->content->items[] = "<a title=\"$title\" href=\"$CFG->wwwroot/blocks/gdata/index.php?hook=status\">$title</a>";
-        $this->content->icons[] = "<img src=\"$CFG->pixpath/i/tick_green_small.gif\" alt=\"$title\" />";
+        //$this->content->icons[] = "<img src=\"$CFG->pixpath/i/tick_green_small.gif\" alt=\"$title\" />";
+        $this->content->icons[] = $OUTPUT->pix_icon ("i/tick_green_small", $title);
 
         $title = get_string('userssynced', 'block_gdata');
         $this->content->items[] = "<a title=\"$title\" href=\"$CFG->wwwroot/blocks/gdata/index.php?hook=users\">$title</a>";
-        $this->content->icons[] = "<img src=\"$CFG->pixpath/i/users.gif\" alt=\"$title\" />";
+        //$this->content->icons[] = "<img src=\"$CFG->pixpath/i/users.gif\" alt=\"$title\" />";
+        $this->content->icons[] = $OUTPUT->pix_icon ("i/users", $title);
 
         $title = get_string('addusers', 'block_gdata');
         $this->content->items[] = "<a title=\"$title\" href=\"$CFG->wwwroot/blocks/gdata/index.php?hook=addusers\">$title</a>";
-        $this->content->icons[] = "<img src=\"$CFG->pixpath/i/users.gif\" alt=\"$title\" />";
+        //$this->content->icons[] = "<img src=\"$CFG->pixpath/i/users.gif\" alt=\"$title\" />";
+        $this->content->icons[] = $OUTPUT->pix_icon ("i/users", $title);
 
         return $this->content;
     }
@@ -129,7 +133,8 @@ class block_gdata extends block_list {
      * @return boolean
      **/
     function before_delete() {
-        return delete_records('config_plugins', 'plugin', 'blocks/gdata');
+        global $DB;
+        return $DB->delete_records('config_plugins', 'plugin', 'blocks/gdata');
     }
 
     /**
@@ -182,7 +187,7 @@ class block_gdata extends block_list {
 
         // Set the time we started
         set_config('cronstarted', $now, 'blocks/gdata');
-
+echo "<pre>";
         try {
             $gapps = new blocks_gdata_gapps();
             $gapps->sync_moodle_to_gapps($now + $expire);
@@ -191,7 +196,7 @@ class block_gdata extends block_list {
         } catch (Zend_Exception $e) {
             mtrace('Synchronization haulted: '.$e->getMessage());
         }
-
+echo "</pre>";
         // Zero out our start time to free up the cron
         set_config('cronstarted', 0, 'blocks/gdata');
 
@@ -242,7 +247,7 @@ class block_gdata extends block_list {
      * @return void
      **/
     function view() {
-        global $CFG;
+        global $CFG, $PAGE;
 
         require_once($CFG->libdir.'/blocklib.php');
         require_once($CFG->dirroot.'/blocks/gdata/exception.php');
@@ -254,6 +259,7 @@ class block_gdata extends block_list {
         $hook  = optional_param('hook', 'status', PARAM_ALPHAEXT);
         $block = block_instance('gdata');
 
+        $PAGE->set_url ('/blocks/gdata/index.php?hook=$hook');
         // Register the hook with the block
         $block->hook = $hook;
 
@@ -267,20 +273,18 @@ class block_gdata extends block_list {
         }
 
         try {
+            $block->print_header();
+
             // Process first if available
             if (is_callable(array($block, $process))) {
                 $block->$process();
             }
             // Run display if available
             if (is_callable(array($block, $display))) {
-                $return = $block->$display();
-
-                if ($return) {
-                    $block->print_header();
-                    echo $return;
-                    $block->print_footer();
-                }
+                $block->$display();
             }
+
+            $block->print_footer();
         } catch (blocks_gdata_exception $e) {
             // Catch and display any errors from processing or display
             error($e->getMessage());
@@ -293,12 +297,14 @@ class block_gdata extends block_list {
      * @return void
      **/
     function print_header() {
-        global $CFG;
+        global $CFG, $OUTPUT;
 
         $title = get_string('blockname', 'block_gdata');
 
-        print_header_simple($title, $title, build_navigation($title));
-        print_heading_with_help($title, 'gapps', 'block_gdata');
+        //print_header_simple($title, $title, build_navigation($title));
+        //print_heading_with_help($title, 'gapps', 'block_gdata');
+        echo $OUTPUT->header ($title, 'block_gdata');
+        echo $OUTPUT->heading ($title);//, 'gapps', 'block_gdata');
 
         // Only print tabs if current hook has a tab
         if (in_array($this->hook, array('status', 'users', 'addusers'))) {
@@ -319,9 +325,9 @@ class block_gdata extends block_list {
      * @return void
      **/
     function print_footer() {
-        global $COURSE;
+        global $COURSE, $OUTPUT;
 
-        print_footer($COURSE);
+        echo $OUTPUT->footer($COURSE);
     }
 
     /**
@@ -357,12 +363,10 @@ class block_gdata extends block_list {
         try {
             $gapps = new blocks_gdata_gapps();
 
-            $output = notify(get_string('connectionsuccess', 'block_gdata'), 'notifysuccess', 'center', true);
+            echo notify(get_string('connectionsuccess', 'block_gdata'), 'notifysuccess', 'center', true);
         } catch (blocks_gdata_exception $e) {
-            $output = notify($e->getMessage(), 'notifyproblem', 'center', true);
+            echo notify($e->getMessage(), 'notifyproblem', 'center', true);
         }
-
-        return $output;
     }
 
     /**
@@ -372,7 +376,7 @@ class block_gdata extends block_list {
      * @return void
      **/
     function users_process() {
-        global $CFG;
+        global $CFG, $DB;
 
         require_once($CFG->dirroot.'/blocks/gdata/gapps.php');
 
@@ -386,11 +390,11 @@ class block_gdata extends block_list {
                 list($select, $from, $where) = $this->get_sql('users');
 
                 // Bulk processing
-                if ($rs = get_recordset_sql("$select $from $where")) {
-                    while ($user = rs_fetch_next_record($rs)) {
+                if ($rs = $DB->get_recordset_sql("$select $from $where")) {
+                    while ($user = $DB->rs_fetch_next_record($rs)) {
                         $gapps->moodle_remove_user($user->id);
                     }
-                    rs_close($rs);
+                    $DB->rs_close($rs);
                 } else {
                     throw new blocks_gdata_exception('invalidparameter');
                 }
@@ -412,7 +416,7 @@ class block_gdata extends block_list {
      * @return string
      **/
     function users_display() {
-        return $this->display_user_table('users');
+        $this->display_user_table('users');
     }
 
     /**
@@ -422,7 +426,7 @@ class block_gdata extends block_list {
      * @return void
      **/
     function addusers_process() {
-        global $CFG;
+        global $CFG, $DB;
 
         require_once($CFG->dirroot.'/blocks/gdata/gapps.php');
 
@@ -436,18 +440,18 @@ class block_gdata extends block_list {
                 list($select, $from, $where) = $this->get_sql('addusers');
 
                 // Bulk processing
-                if ($rs = get_recordset_sql("$select $from $where")) {
-                    while ($user = rs_fetch_next_record($rs)) {
+                if ($rs = $DB->get_recordset_sql("$select $from $where")) {
+                    while ($user = $DB->rs_fetch_next_record($rs)) {
                         $gapps->moodle_create_user($user);
                     }
-                    rs_close($rs);
+                    $DB->rs_close($rs);
                 } else {
                     throw new blocks_gdata_exception('invalidparameter');
                 }
             } else {
                 // Process user IDs
                 foreach ($userids as $userid) {
-                    if ($user = get_record('user', 'id', $userid, '', '', '', '', 'id, username, password')) {
+                    if ($user = $DB->get_record('user', array ('id' => $userid), 'id, username, password')) {
                         $gapps->moodle_create_user($user);
                     } else {
                         throw new blocks_gdata_exception('invalidparameter');
@@ -465,7 +469,7 @@ class block_gdata extends block_list {
      * @return string
      **/
     function addusers_display() {
-        return $this->display_user_table('addusers');
+        $this->display_user_table('addusers');
     }
 
     /**
@@ -479,14 +483,23 @@ class block_gdata extends block_list {
      * @todo Not in love with this method, but it works
      **/
     function display_user_table($hook) {
-        global $CFG;
+        global $CFG, $DB, $OUTPUT;
 
         require_once($CFG->libdir.'/tablelib.php');
 
         $pagesize = optional_param('pagesize', 50, PARAM_INT);
 
-        $table  = new flexible_table("blocks-gdata-$hook");
+        //echo $OUTPUT->box_start();
+
         $filter = $this->create_filter($hook, $pagesize);
+
+        list($select, $from, $where, $params) = $this->get_sql($hook, $filter);
+        $total = $DB->count_records_sql("SELECT COUNT(*) $from $where", $params);
+
+        echo $this->buffer(array($filter, 'display_add'));
+        echo $this->buffer(array($filter, 'display_active'));
+
+        $table  = new flexible_table("blocks-gdata-$hook");
 
         // Define columns based on hook
         switch($hook) {
@@ -509,13 +522,15 @@ class block_gdata extends block_list {
         $table->column_style('action', 'text-align', 'center');
         $table->setup();
 
-        list($select, $from, $where) = $this->get_sql($hook, $filter);
-
-        $total = count_records_sql("SELECT COUNT(*) $from $where");
-
         $table->pagesize($pagesize, $total);
 
-        if ($users = get_records_sql("$select $from $where ORDER BY ".$table->get_sql_sort(), $table->get_page_start(), $table->get_page_size())) {
+        if ($total != 0) {
+            echo "<form class=\"userform\" id=\"userformid\" action=\"$CFG->wwwroot/blocks/gdata/index.php\" method=\"post\">";
+            echo '<input type="hidden" name="hook" value="'.$hook.'" />';
+            echo '<input type="hidden" name="sesskey" value="'.sesskey().'" />';
+        }
+
+        if ($users = $DB->get_records_sql("$select $from $where ORDER BY ".$table->get_sql_sort(), $params, $table->get_page_start(), $table->get_page_size())) {
             foreach ($users as $user) {
                 $username = print_checkbox("userids[]", $user->id, false, s($user->username), s($user->username), '', true);
 
@@ -538,13 +553,10 @@ class block_gdata extends block_list {
             }
         }
 
-        $output  = print_box_start('boxaligncenter boxwidthwide', '', true);
-        $output .= $this->buffer(array($filter, 'display_add'));
-        $output .= $this->buffer(array($filter, 'display_active'));
 
-        if (empty($table->data)) {
+        if ($total == 0) {
             // Avoid printing the form on empty tables
-            $output .= $this->buffer(array($table, 'print_html'));
+            echo $this->buffer(array($table, 'print_html'));
         } else {
             $allstr       = get_string('selectall', 'block_gdata');
             $nonestr      = get_string('selectnone', 'block_gdata');
@@ -554,21 +566,18 @@ class block_gdata extends block_list {
             $confirmstr   = addslashes_js($confirmstr);
             $options      = array(50 => 50, 100 => 100, 250 => 250, 500 => 500, 1000 => 1000);
 
-            $output .= "<form class=\"userform\" id=\"userformid\" action=\"$CFG->wwwroot/blocks/gdata/index.php\" method=\"post\">";
-            $output .= '<input type="hidden" name="hook" value="'.$hook.'" />';
-            $output .= '<input type="hidden" name="sesskey" value="'.sesskey().'" />';
-            $output .= $this->buffer(array($table, 'print_html'));
-            $output .= "<p><a href=\"#\" title=\"$allstr\" onclick=\"select_all_in('FORM', 'userform', 'userformid'); return false;\">$allstr</a> / ";
-            $output .= "<a href=\"#\" title=\"$nonestr\" onclick=\"deselect_all_in('FORM', 'userform', 'userformid'); return false;\">$nonestr</a></p>";
-            $output .= "<input type=\"submit\" name=\"users\" value=\"$submitstr\" />&nbsp;&nbsp;";
-            $output .= "<input type=\"submit\" name=\"allusers\" value=\"$submitallstr\" onclick=\"return confirm('$confirmstr');\" />";
-            $output .= '</form><br />';
-            $output .= popup_form("$CFG->wwwroot/blocks/gdata/index.php?hook=$hook&amp;pagesize=", $options, 'changepagesize',
-                                  $pagesize, '', '', '', true, 'self', get_string('pagesize', 'block_gdata'));
-        }
-        $output .= print_box_end(true);
 
-        return $output;
+            echo $this->buffer(array($table, 'print_html'));
+            echo "<p><a href=\"#\" title=\"$allstr\" onclick=\"select_all_in('FORM', 'userform', 'userformid'); return false;\">$allstr</a> / ";
+            echo "<a href=\"#\" title=\"$nonestr\" onclick=\"deselect_all_in('FORM', 'userform', 'userformid'); return false;\">$nonestr</a></p>";
+            echo "<input type=\"submit\" name=\"users\" value=\"$submitstr\" />&nbsp;&nbsp;";
+            echo "<input type=\"submit\" name=\"allusers\" value=\"$submitallstr\" onclick=\"return confirm('$confirmstr');\" />";
+            echo '</form><br />';
+            //echo popup_form("$CFG->wwwroot/blocks/gdata/index.php?hook=$hook&amp;pagesize=", $options, 'changepagesize',
+            //                      $pagesize, '', '', '', true, 'self', get_string('pagesize', 'block_gdata'));
+            echo $OUTPUT->single_select ("/blocks/gdata/index.php?hook=$hook", 'pagesize', $options); 
+        }
+        //echo $OUTPUT->box_end();
     }
 
     /**
@@ -606,7 +615,7 @@ class block_gdata extends block_list {
         if ($filter === NULL) {
             $filter = $this->create_filter($hook);
         }
-
+        list($filtersql, $params) = $filter->get_sql_filter();
         switch($hook) {
             case 'users':
                 // Get all users that are not in our sync table (block_gdata_gapps) that are not scheduled to be deleted
@@ -615,7 +624,7 @@ class block_gdata extends block_list {
                 $where  = "WHERE u.id = g.userid AND g.remove = 0 AND u.deleted = 0";
 
                 // SQL gets a little weird here because the filtersql doesn't do field aliases
-                if ($filtersql = $filter->get_sql_filter()) {
+                if (!empty($filtersql)) {
                     $where .= " AND u.id IN (SELECT id FROM {$CFG->prefix}user WHERE $filtersql)";
                 }
                 break;
@@ -627,13 +636,13 @@ class block_gdata extends block_list {
                 $from   = "FROM {$CFG->prefix}user";
                 $where  = "WHERE id NOT IN (SELECT userid FROM {$CFG->prefix}block_gdata_gapps WHERE remove = 0) AND deleted = 0 AND username != 'guest'";
 
-                if ($filtersql = $filter->get_sql_filter()) {
+                if (!empty($filtersql)) {
                     $where .= " AND $filtersql";
                 }
                 break;
         }
 
-        return array($select, $from, $where);
+        return array($select, $from, $where, $params);
     }
 }
 
