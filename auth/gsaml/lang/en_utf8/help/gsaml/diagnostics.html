@@ -1,0 +1,35 @@
+<h2>Google Intergration Diagnostics</h2>
+<p>The Diagnostics page will reveal information regarding the gmail, gdata and saml connection status.
+Only administrators have permission to view diagnostic information.</p>
+
+<h3>Table of contents:</h3>
+<ul>
+    <li><a href="#setup">Set Up Table Information</a></li>
+    <li><a href="#gdata">GData Connection Status</a></li>
+    <li><a href="#gmail">GMail Block Connection Test</a></li>
+    <li><a href="#saml">SAML SSO Status Test</a></li>
+</ul>
+
+<h3><a name="setup" href="#setup">Configuration Table Info</a></h3>
+<div class="indent">
+    These tables represnt the current configuration of the Moodle to Google Intergration. Make sure the values are all set. 
+</div>
+
+<h3><a name="gdata" href="#gdata">GData Connection </a></h3>
+<div class="indent">
+The GData block located in the blocks folder contains the librarys for a varity of Google Services. You must confirm
+that it is able to connect to the Google Services. You may need to adjust values on the GData Block Settings page.
+</div>
+
+<h3><a name="gmail" href="#gmail">GMail Block Connection Test</a></h3>
+<div class="indent">
+At the present moment the gmail block will only refresh a users unread messages upon login. You will only
+be able to run the test here if debugging is turned on.  Support for viewing unread messages in real time is coming.
+
+</div>
+
+<h3><a name="saml" href="#saml">SAML SSO Status Test</a></h3>
+<div class="indent">
+The SAML status test is an independent check of the SSO authorization process. It has not yet been implemented.
+<!--But with debugging turned on and set to DEBUG_DEVELOPER error information should be revealed upon login -->
+</div>

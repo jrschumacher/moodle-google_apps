@@ -1,0 +1,120 @@
+<?php
+/**
+* Copyright (C) 2009  Moodlerooms Inc.
+*
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program.  If not, see http://opensource.org/licenses/gpl-3.0.html.
+* 
+* @copyright  Copyright (c) 2009 Moodlerooms Inc. (http://www.moodlerooms.com)
+* @license    http://opensource.org/licenses/gpl-3.0.html     GNU Public License
+* @author Chris Stones
+*/
+
+    global $CFG;
+
+    // Set to defaults if undefined
+    
+    if (!isset ($config->domainname)) {
+        $config->domainname = '';
+    }
+    
+    if (!isset ($config->certificate)) {
+        $config->certificate = 'NOT IMPLEMENTED YET';
+    }
+    $config->certificate = 'NOT IMPLEMENTED YET';
+    
+    if (!isset ($config->rsakey)) {
+        $config->rsakey = 'NOT IMPLEMENTED YET';
+    }
+	$config->rsakey = 'NOT IMPLEMENTED YET';
+
+?>
+
+
+<table cellspacing="0" cellpadding="5" border="0">
+
+<tr valign="top" class="required">
+    <td align="right"><?php print_string('domainname','auth_google') ?>:</td>
+    <td>
+        <input name="domainname" type="text" size="30" value="<?php echo $config->domainname ?>" />
+    </td>
+    <td>The domain name for the Education partner.</td>
+</tr>
+<!--
+
+<tr valign="top" class="required">
+    <td align="right"><?php print_string('cert','auth_google') ?>:</td>
+    <td>
+    <input name="certificate" type="text" size="30" value="<?php echo $config->certificate ?>" />
+       
+    </td>
+    <td> Your certificate used to sign the SAML requests. </td>
+</tr>
+
+
+<tr valign="top" class="required">
+    <td align="right"><?php print_string('key','auth_google') ?>:</td>
+    <td>
+        <input name="rsakey" type="text" size="30" value="<?php echo $config->rsakey ?>" />
+    </td>
+    <td>the encrpytion key</td>
+</tr>
+-->
+</table>
+
+
+<!-- Notes Table -->
+<table cellspacing="0" cellpadding="5" border="0">
+<tr valign="top" class="required">
+
+    <td align="left" >
+    <pre>
+    In a new window open Google Apps Control Panel page as admin
+<a href="">Your Google Apps Control Panel</a>
+
+Click the <b>Advanced tools</b> tab.
+Click the <b>Set up single sign-on (SSO)</b> link next to Authentication.
+
+There are 4 pieces of information you must set on this page.
+
+And here it is...
+
+First check the <b>Enable Single Sign-on</b> box
+
+Now insert this url into the <b>Sign-in page URL</b> text field.
+http://googlealpha.mroomsdev.com/login/index.php
+$CFG->wwwroot."/auth/google/saml/www/saml2/idp/SSOService.php";
+
+Insert this url into the <b>Sign-out page URL</b> text field.
+http://googlealpha.mroomsdev.com/login/logout.php
+
+Insert this url into the <b>Change password URL</b> text field.
+http://googlealpha.mroomsdev.com/login/change_password.php
+
+Both Moodle and Google must be able to securely authorize access to important resources.
+The admin must generate  for <b>Verification certificate</b>
+Upload an X.509 formatted certificate with an embedded public key. 
+For information in key generation visit http://code.google.com/apis/apps/articles/sso-keygen.html  
+The SAML Moodle SSO service only uses <b>RSA keys.</b>
+
+ADDING THE MOODLE GADGET
+
+http://googlealpha.mroomsdev.com/auth/google/moodlegadget.php
+
+
+</pre>
+    </td>
+</tr>
+</table>
+
+

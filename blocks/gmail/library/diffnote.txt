@@ -1,0 +1,20 @@
+OAuth 1.0a Library  being used is Revision: 103
+project url: http://code.google.com/p/oauth-php/
+repos location is: http://oauth-php.googlecode.com/svn/trunk/library
+This project falls under the MIT License
+
+The initial library does not support the HTTPS protocol 
+without the proper Certificate Authorities given to the curl session.
+
+
+Code was added to OAuthRequester.php
+line 402
+                global $CFG;
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, TRUE);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 2);
+                curl_setopt($ch, CURLOPT_CAINFO,$CFG->dirroot."/blocks/gmail/cacert.pem");
+
+The file /store/OAuthStoreGoogle.php
+was also added to interface into Moodle's DB to store tokens and to contain Google's SSO 
+information.
+

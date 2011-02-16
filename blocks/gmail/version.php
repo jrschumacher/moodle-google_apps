@@ -1,0 +1,13 @@
+<?php // $Id: version.php,v 1.34.2.1 2008/03/03 11:48:39 moodler Exp $
+
+////////////////////////////////////////////////////////////////////////////////
+//  Code fragment to define the module version etc.
+//  This fragment is called by /admin/index.php
+////////////////////////////////////////////////////////////////////////////////
+
+$module->version  = 2010041306;
+$module->requires = 2007101509;  // Requires this Moodle version
+$module->cron     = 0;
+
+?>
+

@@ -1,0 +1,83 @@
+<h2>Complete Set Up</h2>
+
+<p>Setting up the full Google to Moodle intergration requires a bit of configuration. This help file should
+guide you through most of the process in getting the Google Authentication Plugin configured as well as the gdata block and
+the gmail block ready.</p>
+
+<h4>Table of contents:</h4>
+<ul>
+    <li><a href="#pre">Preconditions</a></li>
+    <li><a href="#status">Steps</a></li>
+    <li><a href="#expect">Expected Results</a></li>
+    <li><a href="#consider">Considerations</a></li>
+</ul>
+
+<h4><a name="status" href="#status">Google Apps Status</a></h4>
+<div class="indent">
+
+
+<h4><a name="pre" href="#status">Preconditions/assumptions</a></h4>
+<p>
+<ol>
+    <li>gsaml, gaccess, gmail, gdata code have been installed</li>
+    <ul>
+    <li>auth/gsaml</li>
+    <li>blocks/gmail</li>
+    <li>blocks/gdata</li>
+    <li>blocks/gaccess</li>
+    <li>blocks/mgadget (optional as of beta)</li>
+    </ul>
+</ol>
+</p>
+
+<h4><a name="pre" href="#steps">Steps</a></h4>
+<ol>
+    <li>Login to Moodle as an Administrator</li>
+    <li>Click <b>Notifications</b> to update block tables</li>
+    <li>Enable the <b>Google Authentication</b> plugin from the Manage Plugins admin page</li>
+    <li>Now Select Users Authentication goto <b>Google Authentication</b> there should be directions on the page to follow.</li>
+    <li>Enter your google partner page domain</li>
+    <li>Upload Certificate (for more information on creating this <a href="http://code.google.com/apis/apps/articles/sso-keygen.html">Google Documenation Regarding Key Generation</a> )</li>
+    <li>Upload Private Key (for more information on creating this visit <a href="http://code.google.com/apis/apps/articles/sso-keygen.html">Google Documenation Regarding Key Generation</a>)</li>
+    <li>Click Save</li>
+    <li>Follow the directions for adding the proper urls to the google SSO page</li>
+    <li>Click the checkbox on the google site to enable SSO</li>
+    <li>On the Google Site be sure to enable the provisioning API or no users will be updated.</li>
+    <li>On the Google Site make sure API Provisioning is Enabled</li>
+    <li>On the google side you may need to requset more User accounts</li>
+    <li>Return to Moodle's main page</li>
+    <li>Click Edit</li>
+    <li>Add GAccess, GMail and the Gdata blocks to the page.</li>
+    <li>Click <b>Settings</b> in the <b>Google Apps</b> block. Fill out the configuration information.</li>
+    <li>Click the Status link to confirm that your Google Apps block is set up properly.</li>
+    <li>Goto Site Administration &gt; Security &gt; Site policies</li>
+    <li>Check Password Policy</li>
+    <li>Set Password Length to 6 or greater (Required for Google's password policy)</li>
+    <li>In the Gdata block you need to add users to sync. Do this by clicking the add users to sync link in the <b>Google Apps block</b>. It helps to see the result if you set the gdata block cron to 1 min.</li>
+    <li>To Upload those Moodle Users into Google you may run the cron manually by visiting admin/cron.php Results for the sync should appear in the read out.
+    <b>Beware, as of this beta syncing Moodle Users with Google may take a <em>LONG</em> time.</b></li>
+</ol>
+
+<h4><a name="pre" href="#expect">Expected Results</a></h4>
+<ul class="alternate" type="square">
+    <li>clicking on any Google Service links or visiting services from the Google Partner page will 
+    Authenticate against Moodle.</li>
+    <li>User should be logged into Moodle as well as Google Partner Services</li>
+    <li>See the <b>Diagnostics Page</b> in the gsaml settings for more information on your set up.</li>
+</ul>
+
+
+<h4><a name="pre" href="#consider">Considerations (As of BETA Version)</a></h4>
+<ul class="alternate" type="square">
+    <li>The GMail feed may not be found. This is probabily a because the user passow doesn't match googles user password. 
+    In the future this won't be a problem. For now be sure to sync users with the Google Apps block. E Mail will update
+    upon login. In the future unreadmessages should update in real time.</li>
+    
+    <li>The Location of the Google Authentcaion Plugin in the Authetni order is important. 
+    As of this moment it needs to override a users auth type when a moodle user changes passwords. 
+    This behavior may affect mnet users. A solution for 
+    this problem has not yet been found.</li>
+    
+</ul>
+
+</div>

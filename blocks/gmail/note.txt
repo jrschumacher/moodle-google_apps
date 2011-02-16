@@ -1,0 +1,26 @@
+April 19, 2010
+
+The Gmail block requires the rest of the Google-Moodle SSO 
+system to be functional in order to operate properly. 
+
+The Refresh Access Token Link
+will renew a users access token when it expires. 
+User's should seldom have to click this link to obtain
+a new access token from Google. 
+
+Please note, that the system does not support Google's
+optional custom certificate authentication.
+
+If you are experiences SSO errors double check that
+your server time is in agreement with one of the internets many
+NTP servers. Your server and Google's systems must have proper
+time in order to process SSO requests properly.
+
+2 legged OAuth is no longer supported by Google's Gmail atom feed
+and thus has been removed from the system.
+
+Regarding General Maintenance 
+The Gmail block contains a local copy of
+Mozilla's Certification Authorities list. Overtime the 
+Authority certificates bundle may need to be updated. If the Gmail block returns 
+an error regarding SSL you may need to look into this issue.

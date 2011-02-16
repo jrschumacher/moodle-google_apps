@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="blocks/gdata/db" VERSION="20080723" COMMENT="XMLDB file for gdata block"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="block_gdata_gapps" COMMENT="Moodle to Google Apps sync data">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" ENUM="false" NEXT="userid"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" COMMENT="The Moodle user ID of the user being synced to Google Apps" PREVIOUS="id" NEXT="username"/>
+        <FIELD NAME="username" TYPE="char" LENGTH="100" NOTNULL="false" SEQUENCE="false" ENUM="false" COMMENT="The last username sent to Google Apps for this user" PREVIOUS="userid" NEXT="password"/>
+        <FIELD NAME="password" TYPE="char" LENGTH="32" NOTNULL="false" SEQUENCE="false" ENUM="false" COMMENT="The last password sent to Google Apps for this user" PREVIOUS="username" NEXT="remove"/>
+        <FIELD NAME="remove" TYPE="int" LENGTH="3" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" COMMENT="This is a flag to indicate that this user should be deleted from Google Apps on the next sync" PREVIOUS="password" NEXT="lastsync"/>
+        <FIELD NAME="lastsync" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" DEFAULT="0" SEQUENCE="false" ENUM="false" COMMENT="The timestamp of the last time this user was synced to Google Apps" PREVIOUS="remove" NEXT="status"/>
+        <FIELD NAME="status" TYPE="char" LENGTH="30" NOTNULL="false" SEQUENCE="false" ENUM="false" COMMENT="The status of the users sync with Google Apps" PREVIOUS="lastsync"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id" COMMENT="Primary key for block_gdata_gapps" NEXT="userid"/>
+        <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id" PREVIOUS="primary"/>
+      </KEYS>
+    </TABLE>
+  </TABLES>
+</XMLDB>
